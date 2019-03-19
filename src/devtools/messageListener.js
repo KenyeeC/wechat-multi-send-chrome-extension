@@ -6,6 +6,9 @@ chrome.runtime.onMessage.addListener(async data => {
     case MESSAGE_TYPE.RENDER_CONTENT:
       renderContent(data.content);
       break;
+    case MESSAGE_TYPE.RENDER_PROGRESS:
+      renderProgress(data.content);
+      break;
     default:
       break;
   }

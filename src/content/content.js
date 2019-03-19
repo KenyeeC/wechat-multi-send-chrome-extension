@@ -1,4 +1,5 @@
 const contents = [];
+let selectedContents = [];
 
 async function parseContent(content) {
   const { url, postData } = content;
@@ -26,10 +27,16 @@ async function parseContent(content) {
   utils.sendMessage(MESSAGE_TYPE.RENDER_CONTENT, contents);
 }
 
-async function sendContent(users, content) {}
-
-function resetContent(openid, origin) {
-  const content = { ...origin };
-  content.random = Math.random();
-  content.tofakeid = openid;
+async function contentChanged(data) {
+  selectedContents = [];
+  const { value } = data;
+  console.log("群发助手】all contents::::", contents);
+  console.log("【群发助手】selected contents::::", value);
+  value.forEach(chip => {
+    contents.forEach(item => {
+      if (item.id === chip) {
+        selectedContents.push(item.params);
+      }
+    });
+  });
 }

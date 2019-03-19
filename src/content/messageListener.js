@@ -11,6 +11,9 @@ chrome.runtime.onMessage.addListener(async data => {
     case MESSAGE_TYPE.SELECT_USER:
       await userChanged(data.content);
       break;
+    case MESSAGE_TYPE.SELECT_CONTENT:
+      await contentChanged(data.content);
+      break;
     case MESSAGE_TYPE.SEND_MESSAGE:
       await sendMessage(data.content);
       break;

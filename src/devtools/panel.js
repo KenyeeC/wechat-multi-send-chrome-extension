@@ -1,6 +1,8 @@
 const tips = document.getElementById("tips");
 const log = document.getElementById("log");
 const send = document.getElementById("send");
+const progress = document.getElementById("progress");
+const progressLabel = document.getElementById("progressLabel");
 const userGroups = document.getElementById("userGroups");
 const contentGroups = document.getElementById("contentGroups");
 const userGroupsCount = document.getElementById("userGroupsCount");
@@ -77,6 +79,14 @@ function renderContent(msg) {
   contentGroupsCount.innerText = msg.length;
 }
 
+function renderProgress(msg) {
+  const { percent, text } = msg;
+  $(progress).progress({
+    percent
+  });
+  progressLabel.innerText = text;
+}
+
 // init
 $(function() {
   main();
@@ -89,9 +99,11 @@ $(function() {
     }
   });
   $(contentGroups).dropdown({
-    onChange: function(value, text, $selectedItem) {
-      // utils.appendText(log, value);
-      // utils.appendText(log, text);
+    onChange: function(value, text) {
+      utils.sendMessageToActiveTag(MESSAGE_TYPE.SELECT_CONTENT, {
+        value,
+        text
+      });
     }
   });
   send.addEventListener("click", () => {
