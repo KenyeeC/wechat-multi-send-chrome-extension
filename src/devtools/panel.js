@@ -94,6 +94,7 @@ function renderProgress(msg) {
 
 function sendStart() {
   if (!sending) {
+    sending = true;
     $(modal).modal("show");
   }
 }
