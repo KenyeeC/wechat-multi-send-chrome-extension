@@ -39,7 +39,7 @@ async function main() {
   // 监听请求
   chrome.devtools.network.onRequestFinished.addListener(event => {
     const { url, postData } = event.request;
-    if (isSendRequest(event.request)) {
+    if (isSendRequest(event.request) && !sending) {
       utils.sendMessageToActiveTag(MESSAGE_TYPE.PARSE_CONTENT, {
         url,
         postData: postData.params
@@ -94,16 +94,7 @@ function renderProgress(msg) {
 
 function sendStart() {
   if (!sending) {
-    const confirmSend = confirm("确认发送？");
-    if (confirmSend) {
-      $(modal).modal("show");
-      utils.sendMessageToActiveTag(MESSAGE_TYPE.SEND_MESSAGE, {
-        token: loginToken
-      });
-      sending = true;
-    } else {
-      alert("已中止发送");
-    }
+    $(modal).modal("show");
   }
 }
 
@@ -131,6 +122,8 @@ $(function() {
     }
   });
   send.addEventListener("click", () => {
-    sendStart();
+    utils.sendMessageToActiveTag(MESSAGE_TYPE.SEND_MESSAGE, {
+      token: loginToken
+    });
   });
 });

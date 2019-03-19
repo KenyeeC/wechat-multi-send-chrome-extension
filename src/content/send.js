@@ -6,37 +6,60 @@ async function sendMessage(message) {
     sendBlock = true;
     console.log("【群发助手】发送消息---->>", message);
     const { token } = message;
-    if (!token) return alert("未能成功登陆！！刷新下当前页面再试");
-    if (!selectedUsers.length) return alert("未选择发送用户组");
-    if (!selectedContents.length) return alert("未选择发送内容");
-    if (!sendUrl) return alert("未能获取发送的链接");
+    const valid = validateSend(token);
     console.log("【群发助手】发送URL---->>", sendUrl);
     console.log("【群发助手】发送用户---->>", selectedUsers);
     console.log("【群发助手】发送内容---->>", selectedContents);
-    let count = 0;
-    const reqStatus = {
-      success: 0,
-      fail: 0
-    };
-    const total = selectedUsers.length * selectedContents.length;
-    for (const i in selectedUsers) {
-      const user = selectedUsers[i];
-      for (const item of selectedContents) {
-        const delay = count ? 2000 : 0;
-        const params = resetContent(user.user_openid, item);
-        const res = await utils.request(sendUrl, params, "POST", delay);
-        parseRes(res) ? (reqStatus.success += 1) : (reqStatus.fail += 1);
-        count += 1;
-        const percent = Math.floor((count / total) * 100);
-        await setProgress(percent, reqStatus);
+    const confirmSend = confirm("确认发送？");
+    if (confirmSend) {
+      await utils.sendMessage(MESSAGE_TYPE.SEND_START, { valid });
+      let count = 0;
+      const reqStatus = {
+        success: 0,
+        fail: 0
+      };
+      const total = selectedUsers.length * selectedContents.length;
+      for (const i in selectedUsers) {
+        const user = selectedUsers[i];
+        for (const item of selectedContents) {
+          const delay = count ? 2000 : 0;
+          const params = resetContent(user.user_openid, item);
+          const res = await utils.request(sendUrl, params, "POST", delay);
+          parseRes(res) ? (reqStatus.success += 1) : (reqStatus.fail += 1);
+          count += 1;
+          const percent = Math.floor((count / total) * 100);
+          await setProgress(percent, reqStatus);
+        }
       }
+    } else {
+      alert("已中止发送");
+      throw "Block!!!";
     }
-
-    throw "done!";
+    throw "Done!!!";
   } catch (e) {
     console.log("【群发助手】send errMsg:", e);
     sendBlock = false;
     await utils.sendMessage(MESSAGE_TYPE.SEND_END, {});
+  }
+}
+
+function validateSend(token) {
+  let valid = true;
+  if (!token) {
+    alert("未能成功登陆！！刷新下当前页面再试");
+    valid = false;
+  } else if (!selectedUsers.length) {
+    alert("未选择发送用户组");
+    valid = false;
+  } else if (!selectedContents.length) {
+    alert("未选择发送内容");
+    valid = false;
+  } else if (!sendUrl) {
+    alert("未能获取发送的链接");
+    valid = false;
+  }
+  if (!valid) {
+    throw "发送数据验证不通过";
   }
 }
 

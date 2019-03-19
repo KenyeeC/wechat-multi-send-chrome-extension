@@ -9,6 +9,9 @@ chrome.runtime.onMessage.addListener(async data => {
     case MESSAGE_TYPE.RENDER_PROGRESS:
       renderProgress(data.content);
       break;
+    case MESSAGE_TYPE.SEND_START:
+      await sendStart(data.content);
+      break;
     case MESSAGE_TYPE.SEND_END:
       await sendEnd();
       break;
