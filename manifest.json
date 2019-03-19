@@ -1,0 +1,47 @@
+{
+  "name": "BBAsk-QA",
+  "version": "1.1",
+  "description": "北鼻问问问",
+  "permissions": [
+    "http://*/*",
+    "https://*/*",
+    "*://*/*",
+    "activeTab",
+    "declarativeContent",
+    "storage"
+  ],
+  "icons": {
+    "16": "./logo.png",
+    "48": "./logo.png",
+    "128": "./logo.png"
+  },
+  "background": {
+    "scripts": [
+      "./src/constants.js",
+      "./src/utils.js",
+      "./src/background/background.js"
+    ],
+    "persistent": false
+  },
+  "browser_action": {
+    "default_title": "BBAsk-QA",
+    "default_popup": "./src/popup/popup.html",
+    "default_icon": "logo.png"
+  },
+  "devtools_page": "./src/devtools/devtools.html",
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": [
+        "./src/utils.js",
+        "./src/constants.js",
+        "./src/content/user.js",
+        "./src/content/content.js",
+        "./src/content/send.js",
+        "./src/content/messageListener.js"
+      ],
+      "run_at": "document_start"
+    }
+  ],
+  "manifest_version": 2
+}

@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Document</title>
+    <link rel="stylesheet" href="../../lib/semantic/icon.min.css" />
+    <link rel="stylesheet" href="../../lib/semantic/semantic.min.css" />
+    <style>
+      body {
+        padding: 28px 20px;
+      }
+      strong {
+        padding: 2px;
+        font-size: 16px;
+        color: #ff5803;
+      }
+      .field {
+        margin-top: 22px;
+      }
+      .progress-field {
+        margin-top: 52px;
+      }
+    </style>
+  </head>
+  <body>
+    <h3 id="tips" class="ui header">正在获取登录信息...</h3>
+    <div id="log"></div>
+    <div class="field">
+      <label>发送用户组（<strong id="userGroupsCount">0</strong>）</label>
+      <select id="userGroups" class="ui fluid search dropdown" multiple="">
+        <option value="">选择用户组（可多选, 重复用户会排重）</option>
+      </select>
+    </div>
+    <div class="field">
+      <label>发送内容（<strong id="contentGroupsCount">0</strong>）</label>
+      <select id="contentGroups" class="ui fluid search dropdown" multiple="">
+        <option value="">选择内容（顺序会根据你的选择顺序来决定）</option>
+      </select>
+    </div>
+    <div class="field">
+      <button id="send" class="ui positive button">发送</button>
+    </div>
+    <div class="progress-field">
+      <div class="ui indicating progress">
+        <div class="bar"></div>
+        <div class="label">等待发送</div>
+      </div>
+    </div>
+  </body>
+  <script src="../../lib/jquery.min.js"></script>
+  <script src="../../lib/semantic/semantic.min.js"></script>
+  <script src="../constants.js"></script>
+  <script src="../utils.js"></script>
+  <script src="./messageListener.js"></script>
+  <script src="./panel.js"></script>
+</html>
