@@ -1,5 +1,5 @@
 chrome.devtools.panels.create(
-  "WeTool",
+  "群发助手",
   "./logo.png",
   "./src/devtools/panel.html",
   panel => {
