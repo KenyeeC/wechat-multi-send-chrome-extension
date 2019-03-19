@@ -9,15 +9,16 @@ const contentGroups = document.getElementById("contentGroups");
 const userGroupsCount = document.getElementById("userGroupsCount");
 const contentGroupsCount = document.getElementById("contentGroupsCount");
 
+let currentTabId = "";
+
 let loginToken = null;
 let sending = false;
 
 async function main() {
   const currentTab = await utils.getCurrentTab();
-  const { url = "" } = currentTab;
+  const { url = "", id } = currentTab;
 
-  // 清空状态
-  utils.sendMessageToActiveTag(MESSAGE_TYPE.RESET_STATE, {});
+  currentTabId = id;
 
   // 如果不是目标页面，则什么都不做
   if (!url.includes(HOST))
@@ -101,6 +102,10 @@ function sendStart() {
 
 function sendEnd() {
   sending = false;
+}
+
+function checkIsCurrentTab(tabId) {
+  return tabId === currentTabId;
 }
 
 // init

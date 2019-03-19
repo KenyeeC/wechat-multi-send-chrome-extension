@@ -1,4 +1,7 @@
-chrome.runtime.onMessage.addListener(async data => {
+chrome.runtime.onMessage.addListener(async (data, source) => {
+  const tabId = source.tab.id;
+  const isCurrentTab = checkIsCurrentTab(tabId);
+  if (!isCurrentTab) return;
   switch (data.type) {
     case MESSAGE_TYPE.RENDER_USER_GROUPS:
       renderUserGroup(data.content);
