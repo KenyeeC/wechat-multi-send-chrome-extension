@@ -31,21 +31,18 @@ async function main() {
     "✅获取登录信息成功！" ||
     "❗️获取登录信息失败, 确认登录成功或重新登录一下, 讲道理链接上应该有个 token 的";
 
-  if (token) {
-    utils.sendMessageToActiveTag(MESSAGE_TYPE.GET_USER, { token });
-  }
-
   loginToken = token;
+  if (token) await getUser();
+}
 
-  // 监听请求
-  chrome.devtools.network.onRequestFinished.addListener(event => {
-    const { url, postData } = event.request;
-    if (isSendRequest(event.request) && !sending) {
-      utils.sendMessageToActiveTag(MESSAGE_TYPE.PARSE_CONTENT, {
-        url,
-        postData: postData.params
-      });
-    }
+async function getUser(delay = 0) {
+  userGroupsCount.innerHTML =
+    '<div class="ui active inline loader tiny"></div>';
+  if (delay) {
+    await utils.sleep(delay);
+  }
+  await utils.sendMessageToActiveTag(MESSAGE_TYPE.GET_USER, {
+    token: loginToken
   });
 }
 
@@ -108,9 +105,25 @@ function checkIsCurrentTab(tabId) {
   return tabId === currentTabId;
 }
 
+async function unloadPage() {
+  await getUser(1000);
+}
+
 // init
 $(function() {
   main();
+
+  // 监听请求
+  chrome.devtools.network.onRequestFinished.addListener(event => {
+    const { url, postData } = event.request;
+    if (isSendRequest(event.request) && !sending) {
+      utils.sendMessageToActiveTag(MESSAGE_TYPE.PARSE_CONTENT, {
+        url,
+        postData: postData.params
+      });
+    }
+  });
+
   $(userGroups).dropdown({
     onChange: function(value, text) {
       utils.sendMessageToActiveTag(MESSAGE_TYPE.SELECT_USER, {
@@ -119,6 +132,7 @@ $(function() {
       });
     }
   });
+
   $(contentGroups).dropdown({
     onAdd: addedValue =>
       utils.sendMessageToActiveTag(MESSAGE_TYPE.SELECT_CONTENT, {
@@ -131,6 +145,8 @@ $(function() {
         value: removedValue
       })
   });
+
+  // 监听发送按钮
   send.addEventListener("click", () => {
     utils.sendMessageToActiveTag(MESSAGE_TYPE.SEND_MESSAGE, {
       token: loginToken

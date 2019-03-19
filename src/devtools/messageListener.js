@@ -18,5 +18,8 @@ chrome.runtime.onMessage.addListener(async (data, source) => {
     case MESSAGE_TYPE.SEND_END:
       await sendEnd();
       break;
+    case MESSAGE_TYPE.UNLOAD_PAGE:
+      await unloadPage();
+      break;
   }
 });

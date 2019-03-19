@@ -25,11 +25,7 @@
     <h3 id="tips" class="ui header">正在获取登录信息...</h3>
     <div id="log"></div>
     <div class="field">
-      <label
-        >发送用户组（<strong id="userGroupsCount">
-          <div class="ui active inline loader tiny"></div> </strong
-        >）</label
-      >
+      <label>发送用户组（<strong id="userGroupsCount">0</strong>）</label>
       <select id="userGroups" class="ui fluid search dropdown" multiple="">
         <option value="">选择用户组（可多选, 重复用户会排重）</option>
       </select>
@@ -46,7 +42,8 @@
     <div id="modal" class="ui modal">
       <i class="close icon"></i>
       <div class="header">
-        发送过程不要关闭此页面<br />发送失败是指 48 小时内未联系过的失败
+        1.发送过程不要关闭此页面
+        <br />2.发送失败是指发送给了 48小时内未联系过的用户
       </div>
       <div class="content">
         <div id="progress" class="ui indicating progress">
