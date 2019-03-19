@@ -22,7 +22,7 @@ async function sendMessage(message) {
       for (const i in selectedUsers) {
         const user = selectedUsers[i];
         for (const item of selectedContents) {
-          const delay = count ? 2000 : 0;
+          const delay = count ? 3361 : 0;
           const params = resetContent(user.user_openid, item);
           const res = await utils.request(sendUrl, params, "POST", delay);
           parseRes(res) ? (reqStatus.success += 1) : (reqStatus.fail += 1);
