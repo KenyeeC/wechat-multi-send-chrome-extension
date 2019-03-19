@@ -16,14 +16,16 @@ async function sendMessage(message) {
       let count = 0;
       const reqStatus = {
         success: 0,
-        fail: 0
+        fail: 0,
+        totalSecond: 0
       };
       const total = selectedUsers.length * selectedContents.length;
+      reqStatus.totalSecond = 2500 * total;
       for (const i in selectedUsers) {
         const user = selectedUsers[i];
         for (const item of selectedContents) {
-          const delay = count ? 3361 : 0;
-          const params = resetContent(user.user_openid, item);
+          const delay = count ? 2500 : 800;
+          const params = resetContent(user.user_openid, item.params);
           const res = await utils.request(sendUrl, params, "POST", delay);
           parseRes(res) ? (reqStatus.success += 1) : (reqStatus.fail += 1);
           count += 1;
@@ -72,15 +74,22 @@ function resetContent(openid, origin) {
 
 async function setProgress(percent, reqStatus) {
   let text = "";
-  let status = reqStatus
-    ? `(成功条数：${reqStatus.success}/ 失败条数：${reqStatus.fail})`
-    : "";
+  let status = "";
+  let time = "";
+
+  if (reqStatus) {
+    status = `(成功条数：${reqStatus.success}/ 失败条数：${reqStatus.fail})`;
+    const second = reqStatus.totalSecond / 1000;
+    const minute = Math.floor(second / 60);
+    time = minute ? `约${minute}分钟` : `约${second}秒`;
+  }
+
   if (percent === 0) {
     text = "等待发送";
   } else if (percent < 100) {
-    text = `发送中：${percent}% ${status}`;
+    text = `发送中：${percent}% ${time} ${status}`;
   } else if (percent === 100) {
-    text = `发送完成 ${status}`;
+    text = `发送完成!!!! ${status}`;
   } else {
     text = "未知状态!! 写代码的怎么搞的??!!";
   }

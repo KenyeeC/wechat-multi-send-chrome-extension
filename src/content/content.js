@@ -29,15 +29,21 @@ async function parseContent(content) {
 }
 
 async function contentChanged(data) {
-  selectedContents = [];
-  const { value } = data;
-  console.log("群发助手】all contents::::", contents);
-  console.log("【群发助手】selected contents::::", value);
-  value.forEach(chip => {
-    contents.forEach(item => {
-      if (item.id === chip) {
-        selectedContents.push(item.params);
-      }
-    });
-  });
+  const { value, add } = data;
+  if (add) {
+    addSelectedContent(value);
+  } else {
+    removeSelectedContent(value);
+  }
+  console.log("【群发助手】all contents::::", contents);
+  console.log("【群发助手】selected contents::::", selectedContents);
+}
+
+function addSelectedContent(value) {
+  const [item] = contents.filter(elem => elem.id === value);
+  selectedContents.push(item);
+}
+
+function removeSelectedContent(value) {
+  selectedContents = selectedContents.filter(elem => elem.id !== value);
 }

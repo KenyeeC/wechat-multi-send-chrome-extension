@@ -115,12 +115,16 @@ $(function() {
     }
   });
   $(contentGroups).dropdown({
-    onChange: function(value, text) {
+    onAdd: addedValue =>
       utils.sendMessageToActiveTag(MESSAGE_TYPE.SELECT_CONTENT, {
-        value,
-        text
-      });
-    }
+        add: true,
+        value: addedValue
+      }),
+    onRemove: removedValue =>
+      utils.sendMessageToActiveTag(MESSAGE_TYPE.SELECT_CONTENT, {
+        add: false,
+        value: removedValue
+      })
   });
   send.addEventListener("click", () => {
     utils.sendMessageToActiveTag(MESSAGE_TYPE.SEND_MESSAGE, {
