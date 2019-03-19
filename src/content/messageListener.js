@@ -17,5 +17,8 @@ chrome.runtime.onMessage.addListener(async data => {
     case MESSAGE_TYPE.SEND_MESSAGE:
       await sendMessage(data.content);
       break;
+    case MESSAGE_TYPE.RESET_STATE:
+      await resetState();
+      break;
   }
 });

@@ -38,6 +38,7 @@
         "./src/content/user.js",
         "./src/content/content.js",
         "./src/content/send.js",
+        "./src/content/common.js",
         "./src/content/messageListener.js"
       ],
       "run_at": "document_start"

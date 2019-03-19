@@ -1,15 +1,16 @@
-const contents = [];
+let sendUrl = "";
+let contents = [];
 let selectedContents = [];
 
 async function parseContent(content) {
   const { url, postData } = content;
+  sendUrl = url;
   const params = utils.query.parseQueryString(postData);
-  console.log("【群发助手】请求参数拦截成功 --->>>", params);
   const { type } = params;
   let title = "";
   switch (type) {
     case CONTENT_TYPE.TEXT:
-      title = "【文字】" + params["content"];
+      title = "【文字】" + decodeURIComponent(params["content"]);
       break;
     case CONTENT_TYPE.IMAGE:
       title =
@@ -23,7 +24,7 @@ async function parseContent(content) {
       break;
   }
   const id = btoa(Math.random() + new Date().valueOf());
-  contents.push({ id, title, type, params, url });
+  contents.push({ id, title, type, params });
   utils.sendMessage(MESSAGE_TYPE.RENDER_CONTENT, contents);
 }
 

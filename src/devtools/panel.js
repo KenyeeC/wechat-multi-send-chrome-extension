@@ -1,6 +1,7 @@
 const tips = document.getElementById("tips");
 const log = document.getElementById("log");
 const send = document.getElementById("send");
+const modal = document.getElementById("modal");
 const progress = document.getElementById("progress");
 const progressLabel = document.getElementById("progressLabel");
 const userGroups = document.getElementById("userGroups");
@@ -9,10 +10,14 @@ const userGroupsCount = document.getElementById("userGroupsCount");
 const contentGroupsCount = document.getElementById("contentGroupsCount");
 
 let loginToken = null;
+let sending = false;
 
 async function main() {
   const currentTab = await utils.getCurrentTab();
   const { url = "" } = currentTab;
+
+  // 清空状态
+  utils.sendMessageToActiveTag(MESSAGE_TYPE.RESET_STATE, {});
 
   // 如果不是目标页面，则什么都不做
   if (!url.includes(HOST))
@@ -87,6 +92,25 @@ function renderProgress(msg) {
   progressLabel.innerText = text;
 }
 
+function sendStart() {
+  if (!sending) {
+    const confirmSend = confirm("确认发送？");
+    if (confirmSend) {
+      $(modal).modal("show");
+      utils.sendMessageToActiveTag(MESSAGE_TYPE.SEND_MESSAGE, {
+        token: loginToken
+      });
+      sending = true;
+    } else {
+      alert("已中止发送");
+    }
+  }
+}
+
+function sendEnd() {
+  sending = false;
+}
+
 // init
 $(function() {
   main();
@@ -107,8 +131,6 @@ $(function() {
     }
   });
   send.addEventListener("click", () => {
-    utils.sendMessageToActiveTag(MESSAGE_TYPE.SEND_MESSAGE, {
-      token: loginToken
-    });
+    sendStart();
   });
 });
