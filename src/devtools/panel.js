@@ -35,12 +35,9 @@ async function main() {
   if (token) await getUser();
 }
 
-async function getUser(delay = 0) {
+async function getUser() {
   userGroupsCount.innerHTML =
     '<div class="ui active inline loader tiny"></div>';
-  if (delay) {
-    await utils.sleep(delay);
-  }
   await utils.sendMessageToActiveTag(MESSAGE_TYPE.GET_USER, {
     token: loginToken
   });
@@ -108,8 +105,7 @@ function checkIsCurrentTab(tabId) {
 }
 
 async function unloadPage() {
-  contentGroupsCount.innerText = 0;
-  await getUser(1000);
+  location.reload();
 }
 
 // init
