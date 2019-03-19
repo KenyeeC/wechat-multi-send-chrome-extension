@@ -53,6 +53,7 @@ function isSendRequest(request) {
 
 function renderUserGroup(msg) {
   const { userGroups: datas } = msg;
+  // 这种数据量就不用 DocumentFragment 了
   Object.keys(datas).forEach(key => {
     const item = datas[key];
     try {
@@ -69,6 +70,7 @@ function renderUserGroup(msg) {
 
 function renderContent(msg) {
   contentGroups.innerHTML = "";
+  // 同上，这种数据量就不用 DocumentFragment 了
   msg.forEach(item => {
     try {
       const option = document.createElement("option");
@@ -106,6 +108,7 @@ function checkIsCurrentTab(tabId) {
 }
 
 async function unloadPage() {
+  contentGroupsCount.innerText = 0;
   await getUser(1000);
 }
 
