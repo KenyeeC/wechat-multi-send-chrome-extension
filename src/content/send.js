@@ -91,7 +91,7 @@ async function setProgress(percent, reqStatus) {
   if (reqStatus) {
     status =
       `(成功人数：${reqStatus.successUser}　/　` +
-      `失败人数：${reqStatus.failUser})　/　` +
+      `失败人数：${reqStatus.failUser}　/　` +
       `成功条数：${reqStatus.success}　/　` +
       `失败条数：${reqStatus.fail})`;
     const second = reqStatus.totalSecond / 1000;
@@ -171,8 +171,8 @@ async function sendToUsers(users, sentUsers, reqStatus) {
     }
     addUserSendStatus(sentUsers, user.user_openid, SEND_STATUS.OK);
     calcUserSendStatus(sentUsers, reqStatus);
+    await setProgress(Math.floor((utils.getCount() / total) * 100), reqStatus);
   }
-  await setProgress(100, reqStatus);
 }
 
 function addUserSendStatus(sentUsers, openid, status) {
