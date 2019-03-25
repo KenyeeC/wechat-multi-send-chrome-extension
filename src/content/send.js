@@ -102,7 +102,7 @@ async function setProgress(percent, reqStatus) {
   if (percent === 0) {
     text = "等待发送";
   } else if (percent < 100) {
-    text = `发送中：${percent}% ${time} ${status}`;
+    text = `发送中：${percent}%　${time}　${status}`;
   } else if (percent === 100) {
     text = `发送完成!!!! ${status}`;
   } else {
@@ -155,7 +155,7 @@ async function sendToUsers(users, sentUsers, reqStatus) {
       const count = utils.getCount();
       // 避免一个用户重复发送
       if (!sentUsers[user.user_openid]) {
-        const delay = count === 1 ? 800 : 2500;
+        const delay = count === 1 ? 500 : 2500;
         const params = resetContent(user.user_openid, item.params);
         const res = await utils.request(sendUrl, params, "POST", delay);
         // 发送失败的下次不需要发送了
