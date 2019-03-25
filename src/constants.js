@@ -36,3 +36,9 @@ const CONTENT_TYPE = {
   IMAGE: "2",
   CARD: "10"
 };
+
+const SEND_STATUS = {
+  OK: "1",
+  DUPLICATE_SEND: "2",
+  FAIL: "3"
+};

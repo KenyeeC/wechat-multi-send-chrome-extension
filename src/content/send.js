@@ -20,7 +20,9 @@ async function sendMessage(message) {
       const reqStatus = {
         success: 0,
         fail: 0,
-        totalSecond: 0
+        totalSecond: 0,
+        successUser: 0,
+        failUser: 0
       };
       const sentUsers = {};
       const lastUser = {};
@@ -87,7 +89,11 @@ async function setProgress(percent, reqStatus) {
   let time = "";
 
   if (reqStatus) {
-    status = `(成功条数：${reqStatus.success}/ 失败条数：${reqStatus.fail})`;
+    status =
+      `(成功条数：${reqStatus.success} / ` +
+      `失败条数：${reqStatus.fail} / ` +
+      `成功人数：${reqStatus.successUser} / ` +
+      `失败人数：${reqStatus.failUser})`;
     const second = reqStatus.totalSecond / 1000;
     const minute = Math.floor(second / 60);
     time = minute ? `约${minute}分钟` : `约${second}秒`;
@@ -154,15 +160,36 @@ async function sendToUsers(users, sentUsers, reqStatus) {
         const res = await utils.request(sendUrl, params, "POST", delay);
         // 发送失败的下次不需要发送了
         if (!parseRes(res)) {
-          sentUsers[user.user_openid] = true;
+          addUserSendStatus(sentUsers, user.user_openid, SEND_STATUS.FAIL);
         }
         parseRes(res) ? (reqStatus.success += 1) : (reqStatus.fail += 1);
-      } else {
-        reqStatus.fail += 1;
       }
       const percent = Math.floor((count / total) * 100);
       await setProgress(percent, reqStatus);
     }
-    sentUsers[user.user_openid] = true;
+    addUserSendStatus(sentUsers, user.user_openid, SEND_STATUS.OK);
+    calcUserSendStatus(sentUsers, reqStatus);
   }
+  await setProgress(100, reqStatus);
+}
+
+function addUserSendStatus(sentUsers, openid, status) {
+  sentUsers[openid] = sentUsers[openid] || status;
+}
+
+function calcUserSendStatus(sentUsers, reqStatus) {
+  reqStatus.successUser = 0;
+  reqStatus.failUser = 0;
+  Object.keys(sentUsers).forEach(key => {
+    switch (sentUsers[key]) {
+      case SEND_STATUS.OK:
+        reqStatus.successUser += 1;
+        break;
+      case SEND_STATUS.FAIL:
+        reqStatus.failUser += 1;
+        break;
+      default:
+        break;
+    }
+  });
 }
