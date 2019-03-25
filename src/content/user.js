@@ -1,20 +1,22 @@
-let allUsers = [];
+let token = "";
+let allGroups = [];
 let selectedUsers = [];
+let selectedGroups = [];
 
-async function getAllUserAndGroup(content, lastUser = {}, lastUserList = []) {
+async function getAllUserAndGroup(content, lastUser = {}, groupId = -2) {
   try {
+    token = token || content.token;
     const beginCreateTime = lastUser.user_create_time || -1;
     const beginOpenid = lastUser.user_openid || -1;
-    const limit = 20;
     const params = {
       action: "get_user_list",
-      groupid: -2,
+      groupid: groupId,
       begin_openid: beginOpenid,
       begin_create_time: beginCreateTime,
-      limit,
+      limit: PAGE_LIMIT,
       offset: 0,
       backfoward: 1,
-      token: content.token,
+      token: token || content.token,
       lang: "zh_CN",
       f: "json",
       ajax: 1,
@@ -23,24 +25,13 @@ async function getAllUserAndGroup(content, lastUser = {}, lastUserList = []) {
 
     const res = await utils.request(QUERY_URL.USER, params, "GET", 2);
     const groupList = res.group_info.group_info_list;
-    const userList = res.user_list.user_info_list;
-    const combindUserList = [...lastUserList, ...userList];
+    let userList = res.user_list.user_info_list;
     validateUser(userList);
     validateGroup(groupList);
-    // 若列表人数等于列表 limit 长度，则当作还有数据，递归获取
-    if (userList.length === limit) {
-      return getAllUserAndGroup(
-        content,
-        userList[userList.length - 1],
-        combindUserList
-      );
-    }
-    // 若列表人数小于列表 limit 长度，则当作人数已取完
-    allUsers = combindUserList;
+    allGroups = groupList;
     return {
       groupList,
-      userList: combindUserList,
-      userGroups: buildUserGroups(groupList, combindUserList)
+      userList
     };
   } catch (e) {
     console.error("【群发助手】", e);
@@ -71,56 +62,13 @@ function validateGroup(groupList) {
   }
 }
 
-function buildUserGroups(groupList, userList) {
-  const groups = {};
-  groups[GROUP_ID.ALL_USER_ID] = {
-    group_id: GROUP_ID.ALL_USER_ID,
-    group_name: "全部用户",
-    members: userList,
-    group_cnt: userList.length,
-    group_create_time: 0
-  };
-  for (const group of groupList) {
-    const members = userList.filter(user => {
-      // 未分组用户
-      if (group.group_id === GROUP_ID.NO_GOURP) {
-        return user.user_group_id.length === 0;
-      }
-      // 其他用户根据组名来分
-      return user.user_group_id.includes(group.group_id);
-    });
-    group.members = members;
-    groups[group.group_id] = group;
-  }
-  return groups;
-}
-
 function userChanged(data) {
-  selectedUsers = [];
+  const result = [];
   const value = data.value.map(e => Number(e));
-  if (value.includes(GROUP_ID.ALL_USER_ID)) {
-    selectedUsers = allUsers;
-    return;
-  }
-  value.forEach(chip => {
-    allUsers.forEach(user => {
-      if (chip === GROUP_ID.NO_GOURP && user.user_group_id.length === 0) {
-        addSelectedUsers(user);
-      } else if (user.user_group_id.includes(chip)) {
-        addSelectedUsers(user);
-      }
-    });
+  value.forEach(item => {
+    const [group] = allGroups.filter(g => g.group_id === item);
+    if (group) result.push(group);
   });
-  console.log("【群发助手】all users::::", allUsers);
-  console.log("【群发助手】users changed:::::", value);
-  console.log("【群发助手】selected users:::", selectedUsers);
-}
-
-function addSelectedUsers(user) {
-  const exist = selectedUsers.filter(
-    item => item.user_openid === user.user_openid
-  );
-  if (!exist.length) {
-    selectedUsers.push(user);
-  }
+  selectedGroups = result;
+  console.log("【群发助手】selected groups:::", selectedGroups);
 }

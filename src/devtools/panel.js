@@ -49,20 +49,18 @@ function isSendRequest(request) {
 }
 
 function renderUserGroup(msg) {
-  const { userGroups: datas } = msg;
-  // 这种数据量就不用 DocumentFragment 了
-  Object.keys(datas).forEach(key => {
-    const item = datas[key];
+  const { groupList } = msg;
+  for (const item of groupList) {
     try {
       const option = document.createElement("option");
       option.value = item.group_id;
       option.innerHTML = ` ${item.group_name}(${item.group_cnt})`;
       userGroups.appendChild(option);
     } catch (e) {
-      utils.alert(e.message);
+      utils.alert(`err:${e.message}`);
     }
-  });
-  userGroupsCount.innerText = Object.keys(datas).length;
+  }
+  userGroupsCount.innerText = groupList.length;
 }
 
 function renderContent(msg) {

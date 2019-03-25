@@ -1,4 +1,5 @@
 const HOST = "https://mp.weixin.qq.com/";
+const PAGE_LIMIT = 20;
 
 const QUERY_URL = {
   USER: "/cgi-bin/user_tag",

@@ -1,3 +1,5 @@
+let count = 0;
+
 const utils = {
   query: {
     getParams(search = window.location.search) {
@@ -92,5 +94,14 @@ const utils = {
   },
   async sleep(millseconds) {
     return new Promise(resolve => setTimeout(resolve, millseconds));
+  },
+  resetCount() {
+    count = 0;
+  },
+  addCount(num) {
+    count += num || 1;
+  },
+  getCount() {
+    return count;
   }
 };
