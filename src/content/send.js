@@ -90,10 +90,10 @@ async function setProgress(percent, reqStatus) {
 
   if (reqStatus) {
     status =
-      `(成功条数：${reqStatus.success} / ` +
-      `失败条数：${reqStatus.fail} / ` +
-      `成功人数：${reqStatus.successUser} / ` +
-      `失败人数：${reqStatus.failUser})`;
+      `(成功人数：${reqStatus.successUser}　/　` +
+      `失败人数：${reqStatus.failUser})　/　` +
+      `成功条数：${reqStatus.success}　/　` +
+      `失败条数：${reqStatus.fail})`;
     const second = reqStatus.totalSecond / 1000;
     const minute = Math.floor(second / 60);
     time = minute ? `约${minute}分钟` : `约${second}秒`;
@@ -163,6 +163,8 @@ async function sendToUsers(users, sentUsers, reqStatus) {
           addUserSendStatus(sentUsers, user.user_openid, SEND_STATUS.FAIL);
         }
         parseRes(res) ? (reqStatus.success += 1) : (reqStatus.fail += 1);
+      } else {
+        reqStatus.fail += 1;
       }
       const percent = Math.floor((count / total) * 100);
       await setProgress(percent, reqStatus);
