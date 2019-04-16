@@ -7,6 +7,8 @@
 ## 安装
 [点击进入下载页面下载crx](https://github.com/KenyeeC/wechat-multi-send-chrome-extension/releases)，也可以直接下载源码自行安装
 
+[chrome插件安装方法](https://www.jianshu.com/p/bb51dc91b93a)
+
 ## 使用
 1. 进入微信公众号平台 →  管理 → 用户管理
 2. 将需要群发的用户打上同一个标签（如果所有用户都发或者已存在标签，可省略这一步）
